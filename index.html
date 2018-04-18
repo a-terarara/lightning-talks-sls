@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Serverlessを学ぼう</title>
+    <link rel="stylesheet" type="text/css" href="build/build.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome-animation/0.0.10/font-awesome-animation.css">
+  </head>
+  <body>
+    <article class="deck">
+      <section>
+        <h2>Serverlessを学ぼう</h2>
+        <h4>2018/5/xx</h4>
+      </section>
+      <section>
+        <h2>自己紹介</h2>
+        <ul class="build build-items">
+          <li>寺原　歩</li>
+          <li><a href="https://www.is-tech.co.jp/"><image src="images/ist_logo.png" /></a><br/>の技術戦略推進部</li>
+          <li>Node.jsやりたい人</li>
+        </ul>
+      </section>
+      <section>
+        <h1>Whats Serverless?</h1>
+      </section>
+      <section>
+        <h2><a href="https://knowledge.is-tech.co.jp/knowledge/open.knowledge/view/20">knowledge#20</a> を見よう<br/></h2><p><i class="fas fa-bomb fa-5x faa-tada animated" style="color: red"></i></p>
+      </section>
+      <section>
+        <h2>一般的には</h2>
+        <ul class="build build-items">
+          <li><h3>AWS Lambda</h3><img src="images/lambda_icon.png"></li>
+          <li><h3>Azure Functions</h3><img src="images/azure_functions.png"></li>
+          <li><h3>この辺を使ってれば大体Serverlessです。</h2></li>
+        </ul>
+      </section>
+      <section>
+        <h2>本題</h2>
+        <h3>実際にServerlessでWebAPIを作ってみよう</h3>
+      </section>
+      <section>
+        <h2>ServerlessFrameworkを使う</h2>
+        <h3>in AWS × nodejs</h3>
+        <pre><code class="language-javascript">// nodeとnpm入っている前提
+npm install -g serverless
+serverless create --template aws-nodejs --path my-service
+cd ./my-service
+</code></pre>
+      </section>
+      <section>
+        <h2>AWSで動かす</h2>
+        <ul class="build build-items">
+          <li><s>sls deploy -v</s></li>
+          <li>残念ながらAWSアカウント持っていないので・・・。</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Localで動かす</h2>
+        <h3>serverless-offlineを使う</h3>
+        <pre><code class="language-bash">npm install serverless-offline --save-dev
+vi serverless.yml
+</code></pre>
+      </section>
+      <section>
+        <h2>Localで動かす</h2>
+        <h3>serverless.ymlに下記の定義を添えてあげる</h3>
+        <pre><code class="language-javascript">plugins:
+  - serverless-offline
+// hello部分
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          method: GET
+          path: hello</code></pre>
+      </section>
+      <section>
+        <h2>Localで動かす</h2>
+        <pre><code class="language-javascript">sls offline start
+</code></pre>
+      </section>
+    </article>
+    <script src="build/build.js"></script>
+  </body>
+</html>
