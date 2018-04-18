@@ -45,35 +45,48 @@ html
         h3 実際にServerlessでWebAPIを作ってみよう
 
       section
-        h2 Syntax Highlighting
+        h2 ServerlessFrameworkを使う
+        h3 in AWS × nodejs
         pre
           code.language-javascript.
-            (function() {
-              function hanoi(n, a, b, c) {
-                return n ? hanoi(n - 1, a, c, b)
-                    .concat([[a, b]])
-                    .concat(hanoi(n - 1, c, b, a)) : [];
-              }
-              return hanoi(3, 'left', 'right', 'mid')
-                .map(function(d) {
-                  return d[0] + ' -&gt; ' + d[1];
-                });
-            })();
+            // nodeとnpm入っている前提
+            npm install -g serverless
+            serverless create --template aws-nodejs --path my-service
+            cd ./my-service
 
-      section(data-bespoke-hash='named-route')
-        h2 Named Route
-        h3 Powered by <a href="https://github.com/bespokejs/bespoke-hash">bespoke-hash</a>
-        p Look up! This route has been named with a <em>data-bespoke-hash</em> attribute.
       section
-        h2.bullet Just the beginning…
+        h2 AWSで動かす
         ul.build.build-items
-          li Edit <a href="https://pugjs.org">Pug (formerly Jade)</a> markup in <em class="path">src/index.pug</em>
-          li Edit <a href="http://stylus-lang.com">Stylus</a> styles in <em class="path">src/styles/user.styl</em>
-          li Edit JavaScript in <em class="path">src/scripts/main.js</em>
-        br
-        ul.build
-          li
-            strong Enjoy! :)
-            a(href='https://twitter.com/markdalgleish')  -@markdalgleish
+          li <s>sls deploy -v</s>
+          li 残念ながらAWSアカウント持っていないので・・・。
+            
+      section
+        h2 Localで動かす
+        h3 serverless-offlineを使う
+        pre
+          code.language-bash.
+            npm install serverless-offline --save-dev
+            vi serverless.yml
+
+      section
+        h2 Localで動かす
+        h3 serverless.ymlに下記の定義を添えてあげる
+        pre
+          code.language-javascript.
+            plugins:
+              - serverless-offline
+            // hello部分
+            functions:
+              hello:
+                handler: handler.hello
+                events:
+                  - http:
+                      method: GET
+                      path: hello
+      section
+        h2 Localで動かす
+        pre
+          code.language-javascript.
+            sls offline start
 
     script(src='build/build.js')
