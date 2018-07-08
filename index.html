@@ -18,12 +18,17 @@
         <h2>自己紹介</h2>
         <ul class="build build-items">
           <li>寺原　歩</li>
-          <li><a href="https://www.is-tech.co.jp/"><image src="images/ist_logo.png" /></a><br/>の技術戦略推進部</li>
-          <li>Node.jsやりたい人</li>
+          <li><a href="https://www.is-tech.co.jp/"><image src="images/ist_logo.png" /></a><br/>の技術戦略推進部<br/><br/></li>
+          <li><h3>最近こんなアイコン使ってます<br /><image src="images/27805556.png" height="150" width="150"/></h3></li>
         </ul>
       </section>
       <section>
         <h1>Whats Serverless?</h1>
+      </section>
+      <section>
+        <h2><s>サーバを持たない</s></h2>
+        <h4>↑良く言われがち<br/><br/><br/><br/></h4>
+        <h2>サーバを管理しない</h2>
       </section>
       <section><blockquote class="twitter-tweet" data-lang="ja"><p lang="en" dir="ltr">If your PaaS can efficiently start instances in 20ms that run for half a second, then call it serverless. <a href="https://t.co/S3YzvqFYLR">https://t.co/S3YzvqFYLR</a></p>&mdash; adrian cockcroft (@adrianco) <a href="https://twitter.com/adrianco/status/736553530689998848">2016年5月28日</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -61,7 +66,7 @@ cd ./my-service
       <section>
         <h2>AWSで動かす</h2>
         <ul class="build build-items">
-          <li><s>sls deploy -v</s></li>
+          <li><s>serverless deploy -v</s></li>
           <li>残念ながらAWSアカウント持っていないので・・・。</li>
         </ul>
       </section>
@@ -69,7 +74,6 @@ cd ./my-service
         <h2>Localで動かす</h2>
         <h3>serverless-offlineを使う</h3>
         <pre><code class="language-bash">npm install serverless-offline --save-dev
-vi serverless.yml
 </code></pre>
       </section>
       <section>
@@ -77,19 +81,20 @@ vi serverless.yml
         <h3>serverless.ymlに下記の定義を添えてあげる</h3>
         <pre><code class="language-javascript">plugins:
   - serverless-offline
-// hello部分
+
 functions:
   hello:
     handler: handler.hello
     events:
       - http:
           method: GET
-          path: hello</code></pre>
+          path: hello
+</code></pre>
       </section>
       <section>
         <h2>Localで動かす</h2>
         <h3>起動コマンドを実行</h3>
-        <pre><code class="language-javascript">sls offline start
+        <pre><code class="language-javascript">serverless offline start
 </code></pre>
       </section>
       <section>
@@ -103,7 +108,70 @@ functions:
       </section>
       <section>
         <h2>ちょっと発展</h2>
-        <h3>DynamoDBも繋ぎたい</h3><img src="images/add_dynamo.png">
+        <h3>更に子Lambdaを繋ぎたい</h3><img src="images/plus_lambda.png" height="300" width="450">
+      </section>
+      <section>
+        <h3>serverless.ymlにhow-do-you-doを追加</h3>
+        <pre><code class="language-javascript">functions:
+  howDoYouDo:
+    handler: handler.howDoYouDo
+</code></pre>
+      </section>
+      <section>
+        <h3>handler.jsにhowDoYouDo関数を追加</h3>
+        <pre><code class="language-javascript">const howDoYouDo = (event, context, callback) =>
+  callback(null, { message: "how do you do?" });
+</code></pre>
+      </section>
+      <section>
+        <h3>hellowがhowDoYouDo関数を呼び出す in handler.js</h3>
+        <pre><code class="language-javascript">const hello = (event, context, callback) => {
+  const responseForHowDoYouDo =
+    process.env.IS_LOCAL || process.env.IS_OFFLINE ?
+    howDoYouDo(event, context, (err, data) => data) :
+    lambda.invokeAsync({FunctionName: 'howDoYouDo'},
+      (err, data) => data
+    );
+
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: `hello!  ${responseForHowDoYouDo.message}`
+    }),
+  };
+
+  callback(null, response);
+};
+</code></pre>
+      </section>
+      <section>
+        <h3>もうひと手間 in handler.js</h3>
+        <pre><code class="language-javascript">// 行頭に・・・
+const AWS = require('aws-sdk');
+const lambda = new AWS.Lambda();
+// 行末に・・・
+module.exports = {
+  hello,
+  howDoYouDo
+}
+</code></pre>
+      </section>
+      <section>
+        <h3>aws-sdkをinstallして...
+          <pre><code class="language-javascript">npm install --save aws-sdk
+
+</code></pre>
+        </h3>
+      </section>
+      <section>
+        <h3>完成</h3><img src="images/plus_lambda.png" height="300" width="450">
+      </section>
+      <section>
+        <h3>他にも、、、DynamoDBやマネージメントサービス各種を繋げることが可能</h3><img src="images/add_dynamo.png">
+      </section>
+      <section>
+        <h2>Serverlessで行こう<br/><br/></h2>
+        <h2>おしまい</h2>
       </section>
     </article>
     <script src="build/build.js"></script>
